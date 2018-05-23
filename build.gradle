@@ -1,0 +1,39 @@
+apply plugin : 'cpp'
+apply plugin : 'google-test'
+
+model {
+    repositories {
+        libs(PrebuiltLibraries) {
+            googleTest {
+                headers.srcDir new File(projectDir, "tools/googletest/googletest/include")
+                binaries.withType(StaticLibraryBinary) {
+                    staticLibraryFile = file(projectDir.getPath() + "/tools/googletest/build/googlemock/gtest/libgtest.a")
+                }
+            }
+        }
+
+    }
+    components {
+        cpplib(NativeLibrarySpec) {
+            sources {
+                cpp { source { srcDirs "src/cpplib/cpp" include "**/*.cpp" }
+                      exportedHeaders { }
+                    }
+            }
+        }
+    }
+    binaries {
+        withType(GoogleTestTestSuiteBinarySpec) {
+            lib library: "googleTest", linkage: "static"
+            sources {cpp {source.include "**/*.cpp"}}
+        
+            if (targetPlatform.operatingSystem.linux) {
+                cppCompiler.args "-pthread"
+                linker.args "-pthread"
+            }
+        }
+
+    }
+    
+}
+
