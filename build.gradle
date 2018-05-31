@@ -25,7 +25,8 @@ model {
     binaries {
         withType(GoogleTestTestSuiteBinarySpec) {
             lib library: "googleTest", linkage: "static"
-            sources {cpp {source.include "**/*.cpp"}}
+
+            //sources {cpp {source.include "**/*.cpp"}}
         
             if (targetPlatform.operatingSystem.linux) {
                 cppCompiler.args "-pthread"
